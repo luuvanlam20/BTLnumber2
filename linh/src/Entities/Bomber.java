@@ -14,6 +14,8 @@ public class Bomber extends Entity {
     protected boolean deadAt;
     protected boolean isWon;
     protected int level;
+    protected boolean dead=false;
+    protected boolean passAll=false;
     protected Image hpImg = Sprite.extra_life.getFxImage();
     public Bomber(int xUnit, int yUnit) {
         super(xUnit, yUnit);
@@ -45,6 +47,21 @@ public class Bomber extends Entity {
         return bombSl;
     }
 
+    public boolean isPassAll() {
+        return passAll;
+    }
+
+    public void setPassAll(boolean passAll) {
+        this.passAll = passAll;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
 
     public void setEnemy(int enemy) {
         this.enemy = enemy;
@@ -83,7 +100,10 @@ public class Bomber extends Entity {
         if (hp>0) {
             deadAt = true;
             aTime = 0;
-        } else setDestroy();
+        } else{
+            dead=true;
+            setDestroy();
+        }
     }
     public void checkBomb(List<Bomb> bombs) {
         if (!deadAt) {

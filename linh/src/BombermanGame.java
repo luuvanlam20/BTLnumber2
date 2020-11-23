@@ -48,6 +48,7 @@ public class BombermanGame extends Application {
     BufferedReader bRead;
     private boolean gameStart = false;
     private  AnimationTimer timer;
+    public Scene win;
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
@@ -76,6 +77,7 @@ public class BombermanGame extends Application {
 
         // Tao scene
         Scene scene = new Scene(root);
+        win=scene;
         timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
@@ -89,6 +91,8 @@ public class BombermanGame extends Application {
                             mapTxt =new File("").getAbsolutePath() + "/src/Graphics/res/levels/Level" + bomberman.getLevel() +".txt";
                             fileReader = new FileReader(mapTxt);
                         } catch (IOException e) {
+                            bomberman.setPassAll(true);
+                            gameStart=false;
                             System.out.println("File not found!!!");
                         }
                         bRead = new BufferedReader(fileReader);
@@ -111,9 +115,19 @@ public class BombermanGame extends Application {
                     update();
                 } else {
                     timer.stop();
-                    bomberman.setPlayAgain();
-                    bomberman.setWon(true);
-                    scene.setRoot(menuRoot());
+                    if(bomberman.isDead()){
+                        //bomberman.setWon(true);
+                        scene.setRoot(End());
+                        bombs.clear();
+                    }
+                    //if(bomberman.isPassAll()){
+                       // scene.setRoot(WIN());
+                    //}
+                    else{
+                        bomberman.setPlayAgain();
+                        bomberman.setWon(true);
+                        scene.setRoot(menuRoot());
+                    }
                 }
 
             }
@@ -296,6 +310,68 @@ public class BombermanGame extends Application {
         root.getChildren().add(startButton);
         root.getChildren().add(HowToPlay);
         root.getChildren().add(Exit);
+        return root;
+    }
+    public Group End (){
+        Group root =new Group();
+        Label Level1=new Label();
+        Label Score1=new Label();
+        Level1.setText("Level : " + bomberman.getLevel());
+        Score1.setText("Score : " + bomberman.getScore());
+        Font font = Font.font("Verdana", FontPosture.REGULAR,30);
+        Level1.setTextFill(Color.RED);
+        Level1.setFont(font);
+        Level1.setLayoutY(60);
+
+        Score1.setTextFill(Color.RED);
+        Score1.setFont(font);
+        Score1.setLayoutY(90);
+        String background;
+        background =new File("").getAbsolutePath() + "/src/Graphics/res/item/";
+        Image image=new Image("file:C:\\Users\\DELL\\IdeaProjects\\linh\\src\\Graphics\\res\\item\\lose.png");
+
+        ImageView iv=new ImageView();
+        iv.setImage(image);
+        Button back =new Button("Back to menu");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                bomberman.setPlayAgain();
+                bomberman.setDead(false);
+                bomberman.setWon(true);
+                win.setRoot(menuRoot());
+            }
+        });
+        back.setLayoutX(470);
+        back.setLayoutY(400);
+        root.getChildren().add(iv);
+        root.getChildren().add(Level1);
+        root.getChildren().add(Score1);
+        root.getChildren().add(back);
+        return root;
+    }
+    public Group WIN (){
+        Group root =new Group();
+        String background;
+        background =new File("").getAbsolutePath() + "/src/Graphics/res/item/";
+        Image image=new Image("file:C:\\Users\\DELL\\IdeaProjects\\linh\\src\\Graphics\\res\\item\\win.png");
+
+        ImageView iv=new ImageView();
+        iv.setImage(image);
+        Button back =new Button("Back to menu");
+        back.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                bomberman.setPlayAgain();
+                bomberman.setDead(false);
+                bomberman.setWon(true);
+                win.setRoot(menuRoot());
+            }
+        });
+        back.setLayoutX(470);
+        back.setLayoutY(400);
+        root.getChildren().add(iv);
+        root.getChildren().add(back);
         return root;
     }
 }
